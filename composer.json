@@ -20,7 +20,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Aweram\\TraitsHelpers\\TrsitsHelpersServiceProvider"
+                "Aweram\\TraitsHelpers\\TraitsHelpersServiceProvider"
             ]
         }
     }
