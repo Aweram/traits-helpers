@@ -1,0 +1,27 @@
+{
+    "name": "aweram/traits-helpers",
+    "description": "Helpful traits and helper functions",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vladimir Peshkov",
+            "email": "vladimirpeshkov5@gmail.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^10.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aweram\\TraitsHelpers\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Aweram\\TraitsHelpers\\TrsitsHelpersServiceProvider"
+            ]
+        }
+    }
+}
