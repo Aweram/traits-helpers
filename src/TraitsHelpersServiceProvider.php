@@ -2,6 +2,7 @@
 
 namespace Aweram\TraitsHelpers;
 
+use Aweram\TraitsHelpers\Helpers\DateHelper;
 use Illuminate\Support\ServiceProvider;
 
 class TraitsHelpersServiceProvider extends ServiceProvider
@@ -13,6 +14,8 @@ class TraitsHelpersServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-
+        $this->app->bind("date_helper", function () {
+            return app(DateHelper::class);
+        });
     }
 }
