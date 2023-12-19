@@ -1,15 +1,33 @@
 <?php
 
 namespace Aweram\TraitsHelpers\Helpers;
+
+use Carbon\Carbon;
+use Mockery\Exception;
+
+/**
+ * @method Carbon|null forFilter($value, $to = false)
+ * @method Carbon|null changeTz($value)
+ * @method Carbon|null format($value, $format = "d.m.Y H:i")
+ */
 class DateHelper
 {
+    const TZ = "Europe/Moscow";
+    const UTC = "Etc/UTC";
     const ACTIONS = [
         "forFilter",
         "changeTz",
         "format"
     ];
 
+    public $timeZone;
     public $date;
+
+    public function __construct($timeZone = self::TZ)
+    {
+        $this->timeZone = $timeZone;
+        $this->date = null;
+    }
 
     public function __call($method, $args)
     {
@@ -35,18 +53,61 @@ class DateHelper
         }
     }
 
-    protected function getForFilterDate($value, $to = false): void
+    /**
+     * Подготовить дату для фильтрации.
+     *
+     * @param $value
+     * @param bool $to
+     * @return void
+     */
+    protected function getForFilterDate($value, bool $to = false): void
     {
-        $this->date = "filter";
+        if ($to) $value .= " 23:59:59";
+        else $value .= " 00:00:00";
+        try {
+            $carbon = Carbon::createFromFormat("Y-m-d H:i:s", $value, $this->timeZone);
+            $carbon->timezone = self::UTC;
+            $this->date = $carbon->toDateTimeString();
+        } catch (Exception $ex) {
+            $this->date = null;
+        }
     }
 
+    /**
+     * Изменить часовой пояс.
+     *
+     * @param $value
+     * @return void
+     */
     protected function changeTimeZone($value): void
     {
-        $this->date = "zone";
+        if (empty($value)) {
+            $this->date = $value;
+            return;
+        }
+        try {
+            $carbon = new Carbon($value);
+        } catch (Exception $ex) {
+            $this->date = $value;
+            return;
+        }
+        $carbon->timezone = $this->timeZone;
+        $this->date = $carbon->toDateTimeString();
     }
 
-    protected function formatValue($value, $format = "d.m.Y H:i"): void
+    /**
+     * Форматировать значение.
+     *
+     * @param $value
+     * @param string $format
+     * @return void
+     */
+    protected function formatValue($value, string $format = "d.m.Y H:i"): void
     {
-        $this->date = "format";
+        if (empty($value)) {
+            $this->date = $value;
+            return;
+        }
+        $this->date = date($format, strtotime($value));
     }
 }
